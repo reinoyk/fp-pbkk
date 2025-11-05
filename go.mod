@@ -1,4 +1,4 @@
-module github.com/hardytee1/pbkk
+module github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM
 
 go 1.24.0
 
