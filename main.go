@@ -4,19 +4,21 @@ import (
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/controllers"
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/initializers"
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/middleware"
+	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/models"
 	"github.com/gin-gonic/gin"
 )
 
 func init() {
 	initializers.LoadEnvVariables()
 	initializers.ConnectToDB()
+	initializers.DB.AutoMigrate(&models.User{}, &models.Blog{}, &models.Class{})
 }
 
 func main() {
 	router := gin.Default()
 
 	// blog routes
-	router.POST("/blog", controllers.BlogCreate)
+	router.POST("/blog", controllers.CreateBlog)
 	router.GET("/blogs", controllers.BlogGetAll)
 	router.GET("/blogs/:id", controllers.BlogGetByID)
 	router.PUT("/blogs/:id", controllers.BlogUpdate)
@@ -35,6 +37,10 @@ func main() {
 	}
 
 	router.GET("/profile2", middleware.AuthMiddleware2, controllers.Profile)
+
+	router.POST("/create-class", controllers.CreateClass)
+	router.GET("/class/:id/participants", controllers.GetClassParticipants)
+	router.GET("/user/:id/classes", controllers.GetClassesUserEnrolled)
 
 	router.Run()
 }

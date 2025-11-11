@@ -9,5 +9,6 @@ type Blog struct {
 	Title   string
 	Content string
 	UserID  uint
-	User    *User `gorm:"foreignKey:UserID" json:"user,omitempty"`
+	// add this line to establish relationship with User model
+	User *User `gorm:"foreignKey:UserID" json:"user,omitempty"`
 }

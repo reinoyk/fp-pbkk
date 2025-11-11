@@ -3,9 +3,9 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/initializers"
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/models"
+	"github.com/gin-gonic/gin"
 )
 
 // func Testing (c *gin.Context) {
@@ -14,43 +14,48 @@ import (
 // 		})
 // 	}
 
-
-func BlogCreate(c *gin.Context) {
-	//get the request body
+func CreateBlog(c *gin.Context) {
 	var body struct {
-		Title   string `json:"title"`
-		Content string `json:"content"`
+		Title   string `json:"title" binding:"required"`
+		Content string `json:"content" binding:"required"`
 	}
 
 	if err := c.BindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid request body",
-		})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	
-	//create a blog
-	blog := models.Blog{Title: body.Title, Content: body.Content}
-
-	result := initializers.DB.Create(&blog)
-
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": result.Error.Error(),
-		})
+	// Get the authenticated user from context
+	u, exists := c.Get("user")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"blog": blog,
-	})
+	user, ok := u.(models.User)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not read user from context"})
+		return
+	}
+
+	blog := models.Blog{
+		Title:   body.Title,
+		Content: body.Content,
+		UserID:  user.ID, // Associate blog post with the authenticated user
+	}
+
+	if result := initializers.DB.Create(&blog); result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"blog": blog})
 }
 
 func BlogGetAll(c *gin.Context) {
 	//get all blogs
 	var blogs []models.Blog
-	result := initializers.DB.Find(&blogs)
+	result := initializers.DB.Preload("User").Find(&blogs)
 
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -147,7 +152,6 @@ func BlogSoftDelete(c *gin.Context) {
 		})
 		return
 	}
-	
 
 	//return response
 	c.JSON(http.StatusOK, gin.H{
@@ -162,7 +166,7 @@ func BlogHardDelete(c *gin.Context) {
 	//check if it exists
 	var blog models.Blog
 	resultCheck := initializers.DB.Unscoped().First(&blog, id)
-	if resultCheck.Error != nil  {
+	if resultCheck.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": resultCheck.Error.Error(),
 		})
@@ -177,7 +181,6 @@ func BlogHardDelete(c *gin.Context) {
 		})
 		return
 	}
-	
 
 	//return response
 	c.JSON(http.StatusOK, gin.H{
