@@ -6,30 +6,32 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/initializers"
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/models"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func Signup(c *gin.Context) {
+func Register(c *gin.Context) {
+
+	// add binding tags for validation then use c.BindJSON
 	var body struct {
-		Name     string `json:"name"`
-		Email    string `json:"email"`
-		Password string `json:"password"`
+		Name     string `json:"name" binding:"required,min=2"`
+		Email    string `json:"email" binding:"required,email"`
+		Password string `json:"password" binding:"required"`
 	}
 
 	if err := c.BindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	// basic validation
-	if body.Email == "" || body.Password == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Email and password are required"})
-		return
-	}
+	// if body.Email == "" || body.Password == "" {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Email and password are required"})
+	// 	return
+	// }
 
 	// hash password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.DefaultCost)
@@ -48,17 +50,29 @@ func Signup(c *gin.Context) {
 	// avoid returning password
 	user.Password = ""
 
+	// or you can create new response struct without password field
+	// userResponse := struct {
+	// 	ID    uint   `json:"id"`
+	// 	Name  string `json:"name"`
+	// 	Email string `json:"email"`
+	// }{
+	// 	ID:    user.ID,
+	// 	Name:  user.Name,
+	// 	Email: user.Email,
+	// }
+
 	c.JSON(http.StatusOK, gin.H{"user": user})
+	// c.JSON(http.StatusOK, gin.H{"user": userResponse})
 }
 
-func Signin(c *gin.Context) {
+func Login(c *gin.Context) {
 	var body struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
+		Email    string `json:"email" binding:"required,email"`
+		Password string `json:"password" binding:"required"`
 	}
 
 	if err := c.BindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -77,7 +91,9 @@ func Signin(c *gin.Context) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": strconv.FormatUint(uint64(user.ID), 10),
 		// 5 seconds
-		"exp": time.Now().Add(5 * time.Second).Unix(),
+		// "exp": time.Now().Add(5 * time.Second).Unix(),
+		// "exp": time.Now().Add(5 * time.Hour).Unix(),
+		"exp": time.Now().Add(5 * time.Minute).Unix(),
 	})
 
 	secret := os.Getenv("JWT_SECRET")
@@ -104,6 +120,8 @@ func Profile(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
+
+	// log.Printf("Context info: %v", u)
 
 	user, ok := u.(models.User)
 	if !ok {

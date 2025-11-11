@@ -5,4 +5,5 @@ type User struct {
 	Name     string `gorm:"size:255" json:"name"`
 	Email    string `gorm:"unique" json:"email"`
 	Password string `gorm:"size:255" json:"-"`
+	Blogs    []Blog `gorm:"foreignKey:UserID" json:"blogs"`
 }

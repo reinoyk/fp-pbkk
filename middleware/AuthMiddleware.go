@@ -5,10 +5,10 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/initializers"
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/models"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 func AuthMiddleware(c *gin.Context) {
@@ -18,6 +18,25 @@ func AuthMiddleware(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization cookie required"})
 		return
 	}
+
+	//using bearer token from header u can use this also by uncommenting below code
+	// authHeader := c.GetHeader("Authorization")
+	// if authHeader == "" {
+	// 	c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header required"})
+	// 	return
+	// }
+
+	// if !strings.Contains(authHeader, "Bearer ") {
+	// 	c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid Authorization header format"})
+	// 	return
+	// }
+
+	// //split the bearer and token
+	// tokenString := strings.Split(authHeader, "Bearer ")[1]
+	// if tokenString == "" {
+	// 	c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization token required"})
+	// 	return
+	// }
 
 	secret := os.Getenv("JWT_SECRET")
 
