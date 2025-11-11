@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/controllers"
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/initializers"
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/middleware"
+	"github.com/gin-gonic/gin"
 )
 
 func init() {
@@ -24,8 +24,8 @@ func main() {
 	router.DELETE("/blogs/:id/hard", controllers.BlogHardDelete)
 
 	// auth routes
-	router.POST("/signup", controllers.Signup)
-	router.POST("/signin", controllers.Signin)
+	router.POST("/register", controllers.Register)
+	router.POST("/login", controllers.Login)
 
 	// protected example route
 	protected := router.Group("/protected")
