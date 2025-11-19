@@ -2,19 +2,19 @@
 
 <div align="center">
  
-# WEBNOVEL-RECOMMENDATION-SYSTEM
+# DIGITAL-LIBRARY-API
 
-*Intelligent Content Discovery Powered by Graph Databases & LLMs*
+*High-Performance REST API for Digital Book Management*
 
 <p align="center">
-<img src="https://img.shields.io/github/last-commit/reinoyk/fp-pbkk?style=flat&logo=git&logoColor=white&color=0080ff" alt="last-commit">
-<img src="https://img.shields.io/github/languages/top/reinoyk/fp-pbkk?style=flat&color=0080ff" alt="repo-top-language">
-<img src="https://img.shields.io/github/languages/count/reinoyk/fp-pbkk?style=flat&color=0080ff" alt="repo-language-count">
-<img src="https://img.shields.io/badge/Neo4j-Graph_Database-blue" alt="Neo4j">
-<img src="https://img.shields.io/badge/LLM-Google_Gemini-orange" alt="Gemini">
+<img src="https://img.shields.io/github/last-commit/reinoyk/fp-pbkk?style=flat&logo=git&logoColor=white&color=00ADD8" alt="last-commit">
+<img src="https://img.shields.io/badge/Go-1.20+-00ADD8?style=flat&logo=go&logoColor=white" alt="Go Version">
+<img src="https://img.shields.io/badge/Framework-Gin-00ADD8?style=flat&logo=go&logoColor=white" alt="Gin Framework">
+<img src="https://img.shields.io/badge/ORM-Gorm-red?style=flat" alt="Gorm">
+<img src="https://img.shields.io/badge/Database-MySQL-blue?style=flat&logo=mysql&logoColor=white" alt="MySQL">
 </p>
 
-<em>Built with Python, Flask, Neo4j, LangChain, and Google Gemini</em>
+<em>Built with Golang, Gin, Gorm, and MySQL</em>
 
 </div>
 ---
@@ -22,15 +22,16 @@
 ## Table of Contents
 
 * [Overview](#overview)
-* [Features](#features)
+* [Key Features](#key-features)
 * [Tech Stack](#tech-stack)
 * [System Architecture](#system-architecture)
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
+  * [Database Setup](#database-setup)
   * [Configuration](#configuration)
-* [Usage](#usage)
 * [Project Structure](#project-structure)
+* [API Endpoints](#api-endpoints)
 * [How to Contribute](#how-to-contribute)
 * [License](#license)
 
@@ -38,40 +39,31 @@
 
 ## Overview
 
-**WebNovel Recommendation System** is an advanced full-stack application designed to revolutionize how users discover reading content. By leveraging the structural power of **Graph Databases (Neo4j)** and the cognitive capabilities of **Large Language Models (LLMs)**, this system goes beyond simple keyword matching.
+**Digital-Library-API** is a robust backend service designed to manage a digital library catalog. Built using **Golang** for high concurrency and performance, this project utilizes the **Gin Web Framework** for fast routing and **Gorm** as the ORM for seamless MySQL database interaction.
 
-The core of the project is a "NeoConverse" style integration where **LangChain** and **Google Gemini** translate natural language user queries directly into executable Cypher code. This allows users to converse with the database to find novels based on complex relationships between authors, genres, and tags, alongside a traditional hybrid recommendation logic based on metadata similarity.
+The system is architected with modularity in mind, separating configuration logic from core business processing. Currently pre-populated with a structured dataset of popular books, the ongoing development focuses on implementing secure **JWT-based Authentication** and comprehensive **CRUD (Create, Read, Update, Delete)** operations to serve as a reliable backbone for library management applications.
 
 ---
 
-## Features
+## Key Features
 
-* 🕸️ **Graph-Based Modeling:** Utilizes Neo4j to model complex relationships between Novels, Authors, Genres, and Tags for deep interconnected data analysis.
-* 🤖 **Natural Language Querying (Text-to-Cypher):** Users can ask questions like *"Find me fantasy novels with strong protagonists"* and the system converts this into optimized Cypher queries using Google Gemini.
-* 🧠 **Hybrid Recommendation Engine:** Calculates similarity scores based on shared metadata to suggest relevant content even without specific prompts.
-* 📊 **Interactive Dashboard:** A responsive Single Page Application (SPA) dashboard for visualizing recommendations and exploring the novel database.
-* ⚡ **Robust API:** A Python Flask backend that handles data processing, LLM chain management, and API responses.
+* 🚀 **High-Performance Routing:** Powered by Gin, offering blazing fast HTTP request handling.
+* 🗄️ **ORM Integration:** Uses Gorm for type-safe, developer-friendly interactions with the MySQL database.
+* 🔐 **Secure Authentication (In Progress):** Implementation of JSON Web Tokens (JWT) for stateless user authentication and role-based authorization.
+* 📚 **CRUD Operations:** Full management capabilities for book catalogs (Add, Browse, Edit, Remove).
+* 🧩 **Modular Architecture:** Clean separation of concerns (Config, Models, Controllers, Routes) for maintainability.
+* 🛢️ **Structured Data:** Includes a pre-connected schema populated with popular book data.
 
 ---
 
 ## Tech Stack
 
-* **Backend:** Python, Flask
-* **Database:** Neo4j (Graph Database)
-* **AI & LLM:** LangChain, Google Gemini (API)
-* **Frontend:** HTML, CSS, JavaScript (SPA)
-* **Data Processing:** Pandas, NumPy
-
----
-
-## System Architecture
-
-The system follows a modern client-server architecture:
-1.  **Client:** The SPA Dashboard sends user prompts or navigation requests to the API.
-2.  **Server (Flask):** Receives requests and determines the logic flow (Standard Search vs. AI Query).
-3.  **LangChain Integration:** For AI queries, the prompt is passed to the LangChain agent configured with the Google Gemini model.
-4.  **Graph Execution:** The LLM generates a Cypher query, which is executed against the Neo4j database.
-5.  **Response:** Structured data (Novel nodes and relationships) is returned to the frontend for display.
+* **Language:** [Go (Golang)](https://go.dev/)
+* **Framework:** [Gin](https://github.com/gin-gonic/gin)
+* **ORM:** [Gorm](https://gorm.io/)
+* **Database:** MySQL (Managed via XAMPP/TablePlus)
+* **Authentication:** JWT (JSON Web Token)
+* **Environment Management:** Godotenv
 
 ---
 
@@ -79,9 +71,11 @@ The system follows a modern client-server architecture:
 
 ### Prerequisites
 
-* **Python 3.9+**
-* **Neo4j Database:** You need a running instance of Neo4j (Desktop or AuraDB).
-* **Google Cloud API Key:** Access to Google Gemini models.
+Ensure you have the following installed on your local machine:
+
+* **Go** (version 1.18 or higher)
+* **XAMPP** (for local MySQL server)
+* **TablePlus** or **phpMyAdmin** (for database management)
 * **Git**
 
 ### Installation
@@ -98,63 +92,62 @@ The system follows a modern client-server architecture:
     cd fp-pbkk
     ```
 
-3.  **Install the dependencies:**
+3.  **Install dependencies:**
 
     ```sh
-    pip install -r requirements.txt
+    go mod tidy
     ```
+
+### Database Setup
+
+1.  Start **Apache** and **MySQL** from your XAMPP Control Panel.
+2.  Open **TablePlus** (or your preferred DB tool).
+3.  Create a new database named `digital_library` (or as specified in the config).
+4.  *Optional:* If a `.sql` file is provided in the `database/` folder, import it to seed initial book data.
 
 ### Configuration
 
-1.  Create a `.env` file in the root directory.
-2.  Add your database credentials and API keys:
+1.  Create a `.env` file in the root directory based on the example below:
 
     ```env
-    NEO4J_URI=bolt://localhost:7687
-    NEO4J_USERNAME=neo4j
-    NEO4J_PASSWORD=your_password
-    GOOGLE_API_KEY=your_google_gemini_api_key
+    DB_USER=root
+    DB_PASSWORD=
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_NAME=digital_library
+    
+    JWT_SECRET=your_very_secret_key
+    PORT=8080
     ```
-
-3.  **Database Setup:**
-    * Ensure your Neo4j instance is running.
-    * Import your initial dataset (CSV/JSON) into Neo4j using the provided scripts in `scripts/` or via Neo4j Browser.
 
 ---
 
 ## Usage
 
-1.  **Start the Flask Server:**
+1.  **Run the application:**
 
     ```sh
-    python app.py
+    go run main.go
     ```
 
-2.  **Access the Dashboard:**
-    * Open your web browser and navigate to `http://localhost:5000` (or the port specified in your console).
-
-3.  **Example Queries:**
-    * *Standard Mode:* Browse the top-rated novels or filter by tags.
-    * *AI Mode:* Type in the chat bar:
-        > "Recommend me a mystery novel written by an author who also writes horror."
-        > "Show me the top 5 trending novels in the Fantasy genre."
+2.  **Access the API:**
+    The server will start on `http://localhost:8080`.
 
 ---
 
 ## Project Structure
 
+The project follows a modular structure to ensure scalability:
+
 ```text
 fp-pbkk/
-├── app.py              # Main Flask application entry point
-├── requirements.txt    # Python dependencies
-├── .env                # Environment variables (not committed)
-├── static/             # CSS, JS, and Images for the dashboard
-│   ├── css/
-│   └── js/
-├── templates/          # HTML templates
-│   └── index.html
-├── modules/            # Python modules for logic
-│   ├── db_connector.py # Neo4j connection logic
-│   ├── llm_chain.py    # LangChain & Gemini integration
-│   └── recommender.py  # Similarity algorithms
-└── data/               # Dataset files (if applicable)
+├── config/             # Database configuration and environment setup
+│   └── database.go
+├── controllers/        # Logic for handling requests (BookController, AuthController)
+├── models/             # Structs and Gorm models (Book, User)
+├── routes/             # API Route definitions
+├── main.go             # Entry point of the application
+├── go.mod              # Go module definition
+├── .env                # Environment variables
+└── README.md           # Documentation
+```
