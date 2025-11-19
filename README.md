@@ -1,216 +1,160 @@
-# Framework Programming GIN + GORM
+<div id="top">
 
-REST API boilerplate built with [Gin](https://github.com/gin-gonic/gin) and [GORM](https://gorm.io/) that demonstrates user authentication with JWT and CRUD operations for blog posts.
+<div align="center">
+ 
+# WEBNOVEL-RECOMMENDATION-SYSTEM
+
+*Intelligent Content Discovery Powered by Graph Databases & LLMs*
+
+<p align="center">
+<img src="https://img.shields.io/github/last-commit/reinoyk/fp-pbkk?style=flat&logo=git&logoColor=white&color=0080ff" alt="last-commit">
+<img src="https://img.shields.io/github/languages/top/reinoyk/fp-pbkk?style=flat&color=0080ff" alt="repo-top-language">
+<img src="https://img.shields.io/github/languages/count/reinoyk/fp-pbkk?style=flat&color=0080ff" alt="repo-language-count">
+<img src="https://img.shields.io/badge/Neo4j-Graph_Database-blue" alt="Neo4j">
+<img src="https://img.shields.io/badge/LLM-Google_Gemini-orange" alt="Gemini">
+</p>
+
+<em>Built with Python, Flask, Neo4j, LangChain, and Google Gemini</em>
+
+</div>
+---
+
+## Table of Contents
+
+* [Overview](#overview)
+* [Features](#features)
+* [Tech Stack](#tech-stack)
+* [System Architecture](#system-architecture)
+* [Getting Started](#getting-started)
+  * [Prerequisites](#prerequisites)
+  * [Installation](#installation)
+  * [Configuration](#configuration)
+* [Usage](#usage)
+* [Project Structure](#project-structure)
+* [How to Contribute](#how-to-contribute)
+* [License](#license)
+
+---
+
+## Overview
+
+**WebNovel Recommendation System** is an advanced full-stack application designed to revolutionize how users discover reading content. By leveraging the structural power of **Graph Databases (Neo4j)** and the cognitive capabilities of **Large Language Models (LLMs)**, this system goes beyond simple keyword matching.
+
+The core of the project is a "NeoConverse" style integration where **LangChain** and **Google Gemini** translate natural language user queries directly into executable Cypher code. This allows users to converse with the database to find novels based on complex relationships between authors, genres, and tags, alongside a traditional hybrid recommendation logic based on metadata similarity.
+
+---
 
 ## Features
 
-- JSON Web Token (JWT) authentication with cookie storage
-- User registration and login with bcrypt password hashing
-- Protected routes that hydrate the authenticated user from the token
-- Blog post CRUD (create, read, update, soft delete, hard delete) backed by MySQL
-- Database migrations via `gorm.DB.AutoMigrate`
+* 🕸️ **Graph-Based Modeling:** Utilizes Neo4j to model complex relationships between Novels, Authors, Genres, and Tags for deep interconnected data analysis.
+* 🤖 **Natural Language Querying (Text-to-Cypher):** Users can ask questions like *"Find me fantasy novels with strong protagonists"* and the system converts this into optimized Cypher queries using Google Gemini.
+* 🧠 **Hybrid Recommendation Engine:** Calculates similarity scores based on shared metadata to suggest relevant content even without specific prompts.
+* 📊 **Interactive Dashboard:** A responsive Single Page Application (SPA) dashboard for visualizing recommendations and exploring the novel database.
+* ⚡ **Robust API:** A Python Flask backend that handles data processing, LLM chain management, and API responses.
+
+---
 
 ## Tech Stack
 
-- Go 1.24
-- Gin Web Framework
-- GORM ORM
-- MySQL (via `gorm.io/driver/mysql`)
+* **Backend:** Python, Flask
+* **Database:** Neo4j (Graph Database)
+* **AI & LLM:** LangChain, Google Gemini (API)
+* **Frontend:** HTML, CSS, JavaScript (SPA)
+* **Data Processing:** Pandas, NumPy
 
-## Key Dependencies
+---
 
-- [godotenv](https://github.com/joho/godotenv): load environment variables from a `.env` file during development
-- [Gin](https://gin-gonic.com/): high-performance HTTP web framework for Go
-- [GORM](https://gorm.io/): developer-friendly ORM for Go with rich database features
+## System Architecture
 
-## Installation
+The system follows a modern client-server architecture:
+1.  **Client:** The SPA Dashboard sends user prompts or navigation requests to the API.
+2.  **Server (Flask):** Receives requests and determines the logic flow (Standard Search vs. AI Query).
+3.  **LangChain Integration:** For AI queries, the prompt is passed to the LangChain agent configured with the Google Gemini model.
+4.  **Graph Execution:** The LLM generates a Cypher query, which is executed against the Neo4j database.
+5.  **Response:** Structured data (Novel nodes and relationships) is returned to the frontend for display.
 
-1. Ensure you have Go 1.24 installed: `go version`
-2. Clone the repository and enter the project folder:
-
-```bash
-git clone https://github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM.git
-cd Framework-Programming-GIN-GORM
-```
-
-3. Pull core dependencies explicitly (optional when using `go mod tidy`, but useful for first-time setup):
-
-```bash
-go get github.com/joho/godotenv
-go get github.com/gin-gonic/gin
-go get gorm.io/gorm
-go get gorm.io/driver/mysql
-```
-
-4. Download remaining module requirements:
-
-```bash
-go mod tidy
-```
-
-5. Follow the sections below to configure environment variables, run migrations, and start the server.
+---
 
 ## Getting Started
 
 ### Prerequisites
 
-- Go 1.24 or newer
-- MySQL instance (local or remote)
+* **Python 3.9+**
+* **Neo4j Database:** You need a running instance of Neo4j (Desktop or AuraDB).
+* **Google Cloud API Key:** Access to Google Gemini models.
+* **Git**
 
-### Environment Variables
+### Installation
 
-Create a `.env` file in the project root with at least the following values:
+1.  **Clone the repository:**
 
-```
-DB_URL="user:password@tcp(localhost:3306)/dbname?parseTime=true"
-JWT_SECRET="your-jwt-secret"
-ENV="development"
-```
+    ```sh
+    git clone [https://github.com/reinoyk/fp-pbkk.git](https://github.com/reinoyk/fp-pbkk.git)
+    ```
 
-`JWT_SECRET` is used to sign and verify JWT tokens. `ENV` is optional and only toggles the secure flag on cookies when set to `production`.
+2.  **Navigate to the project directory:**
 
-### Run Database Migrations
+    ```sh
+    cd fp-pbkk
+    ```
 
-Ensure the database specified in `DB_URL` exists. Then run:
+3.  **Install the dependencies:**
 
-```bash
-go run migrate/Migrate.go
-```
+    ```sh
+    pip install -r requirements.txt
+    ```
 
-This will auto-migrate the `models.Blog` and `models.User` schemas.
+### Configuration
 
-### Start the Server
+1.  Create a `.env` file in the root directory.
+2.  Add your database credentials and API keys:
 
-```bash
-go run main.go
-```
+    ```env
+    NEO4J_URI=bolt://localhost:7687
+    NEO4J_USERNAME=neo4j
+    NEO4J_PASSWORD=your_password
+    GOOGLE_API_KEY=your_google_gemini_api_key
+    ```
 
-By default Gin listens on `http://localhost:8080`.
+3.  **Database Setup:**
+    * Ensure your Neo4j instance is running.
+    * Import your initial dataset (CSV/JSON) into Neo4j using the provided scripts in `scripts/` or via Neo4j Browser.
+
+---
 
 ## Usage
 
-1. **Sign up** a user via `POST /signup` with `name`, `email`, and `password`.
-2. **Sign in** via `POST /signin`. On success the JWT is set in an HttpOnly cookie named `token` and also returned in the JSON body. The token expiry is currently configured for 5 seconds for demonstration purposes; adjust in `controllers/AuthController.go` as needed.
-3. Blog CRUD endpoints are public and do not require authentication. Only the example protected endpoints require authentication:
+1.  **Start the Flask Server:**
 
-- `GET /protected/profile`
-- `GET /profile2`
+    ```sh
+    python app.py
+    ```
 
-## API Reference
+2.  **Access the Dashboard:**
+    * Open your web browser and navigate to `http://localhost:5000` (or the port specified in your console).
 
-| Method | Route                | Auth | Description                             |
-| ------ | -------------------- | ---- | --------------------------------------- |
-| POST   | `/signup`            | No   | Create a new user                       |
-| POST   | `/signin`            | No   | Sign in, receive JWT cookie and token   |
-| POST   | `/blog`              | No   | Create a blog post                      |
-| GET    | `/blogs`             | No   | List all blog posts                     |
-| GET    | `/blogs/:id`         | No   | Get a blog post by ID                   |
-| PUT    | `/blogs/:id`         | No   | Update a blog post                      |
-| DELETE | `/blogs/:id`         | No   | Soft delete a blog post                 |
-| DELETE | `/blogs/:id/hard`    | No   | Permanently delete a blog post          |
-| GET    | `/protected/profile` | Yes  | Retrieve authenticated user profile     |
-| GET    | `/profile2`          | Yes  | Profile example using `AuthMiddleware2` |
+3.  **Example Queries:**
+    * *Standard Mode:* Browse the top-rated novels or filter by tags.
+    * *AI Mode:* Type in the chat bar:
+        > "Recommend me a mystery novel written by an author who also writes horror."
+        > "Show me the top 5 trending novels in the Fantasy genre."
 
-### Request Samples
+---
 
-Create blog post:
+## Project Structure
 
-```http
-POST /blog
-Content-Type: application/json
-
-{
-  "title": "Hello Gin",
-  "content": "Building REST APIs with Gin and GORM."
-}
-```
-
-### Error Handling
-
-Responses follow a simple JSON structure on error:
-
-```json
-{
-  "error": "message"
-}
-```
-
-## Development Notes
-
-- Database connection is configured in `initializers/ConnectToDB.go` using the `DB_URL` DSN.
-- Middleware in `middleware/AuthMiddleware.go` validates JWTs, loads the `models.User`, and stores it in the Gin context under the `user` key.
-- `migrate/Migrate.go` can be extended with additional models as the domain grows.
-- Token lifetime defaults to 5 seconds in `controllers/AuthController.go` for easy expiration testing; adjust `time.Now().Add(5 * time.Second)` for production use.
-
-## Troubleshooting
-
-- **`failed to connect to database`**: verify `DB_URL` points to an accessible MySQL instance and that the database exists.
-- **`Authorization cookie required`**: ensure you include the `token` cookie returned from `/signin` when calling protected routes.
-
-## License
-
-No license information has been provided. Add one if you plan to distribute or open-source this project.
-
-## Testing with Postman
-
-Below are simple steps to test the API using Postman. You can either let Postman manage cookies (recommended) or use the JWT returned by `/signin` as a Bearer token.
-
-1. Create an environment variable in Postman named `baseUrl` with value `http://localhost:8080` (or your server URL).
-
-2. Sign up a new user
-  - Method: POST
-  - URL: `{{baseUrl}}/signup`
-  - Body (JSON):
-
-```json
-{
-  "name": "Your Name",
-  "email": "you@example.com",
-  "password": "secret"
-}
-```
-
-3. Sign in
-  - Method: POST
-  - URL: `{{baseUrl}}/signin`
-  - Body (JSON):
-
-```json
-{
-  "email": "you@example.com",
-  "password": "secret"
-}
-```
-
-  - Response: the server sets an HttpOnly cookie named `token` (Postman will store this cookie automatically if you use the same domain) and returns the token in the JSON body as `token`.
-
-4. Using cookies (recommended)
-  - After a successful `/signin`, Postman stores the `token` cookie for `localhost`. When you send subsequent requests to the same `{{baseUrl}}`, Postman will include the cookie automatically. If cookies are not being sent, open Postman's Cookies (Cookies Manager) and confirm `token` exists for the `localhost` domain.
-
-5. Using the token as Authorization header (alternative)
-  - Copy the `token` value from the `/signin` JSON response.
-  - For protected requests (e.g. `GET {{baseUrl}}/protected/profile`), add a header:
-
-```
-Authorization: Bearer <token>
-```
-
-  - Note: The project prefers cookie-based auth. Authorization header support is only available if you modify the middleware to accept `Authorization` header.
-
-6. Example: create a blog post (no auth required)
-  - Method: POST
-  - URL: `{{baseUrl}}/blog`
-  - Body (JSON):
-
-```json
-{
-  "title": "Postman Test",
-  "content": "Testing the API with Postman"
-}
-```
-
-7. Troubleshooting with Postman
-  - If you receive `Authorization cookie required`, verify that Postman stored and is sending the `token` cookie for `localhost`.
-  - If you used the Bearer header and receive `Invalid token`, ensure the token is exactly as returned by `/signin` and not wrapped or truncated.
-
-If you'd like, I can generate a Postman collection (JSON) for these requests and add it to the repo so you can import it directly.
+```text
+fp-pbkk/
+├── app.py              # Main Flask application entry point
+├── requirements.txt    # Python dependencies
+├── .env                # Environment variables (not committed)
+├── static/             # CSS, JS, and Images for the dashboard
+│   ├── css/
+│   └── js/
+├── templates/          # HTML templates
+│   └── index.html
+├── modules/            # Python modules for logic
+│   ├── db_connector.py # Neo4j connection logic
+│   ├── llm_chain.py    # LangChain & Gemini integration
+│   └── recommender.py  # Similarity algorithms
+└── data/               # Dataset files (if applicable)
