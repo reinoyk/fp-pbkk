@@ -29,16 +29,17 @@ func main() {
 
 	//In postman: Login then enter auth code in "Authorization" with type "Bearer Token"
 	// Admin only routes
-	admin := router.Group("/")
-	admin.Use(middleware.AdminOnly)
-	{
-		admin.POST("/novels", controllers.CreateNovel)
-		admin.PUT("/novels/:id", controllers.UpdateNovel)
-		admin.DELETE("/novels/:id", controllers.RemoveNovel)
-	}
 	protected := router.Group("/")
 	protected.Use(middleware.AuthMiddleware)
 	{
+		admin := protected.Group("/")
+		admin.Use(middleware.AdminOnly)
+		{
+			admin.POST("/novels", controllers.CreateNovel)
+			admin.PUT("/novels/:id", controllers.UpdateNovel)
+			admin.DELETE("/novels/:id", controllers.RemoveNovel)
+			admin.DELETE("/users/:id", controllers.DeleteUser)
+		}
 
 		//localhost:8001/profile/
 		protected.GET("/profile", controllers.Profile) // <-- profile includes: id, name, and email

@@ -120,3 +120,27 @@ func Profile(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"user": userResponse})
 }
+
+func DeleteUser(c *gin.Context) {
+	id := c.Param("id")
+
+	var user models.User
+
+	if result := initializers.DB.First(&user, id); result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	//Remove foreign key
+	if err := initializers.DB.Model(&user).Association("BookmarkedNovels").Clear(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not clear user bookmarks"})
+		return
+	}
+
+	if result := initializers.DB.Unscoped().Delete(&user); result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not delete user"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
+}
