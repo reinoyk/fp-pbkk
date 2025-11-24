@@ -11,36 +11,42 @@ import (
 func init() {
 	initializers.LoadEnvVariables()
 	initializers.ConnectToDB()
-	initializers.DB.AutoMigrate(&models.User{}, &models.Blog{}, &models.Class{})
+	initializers.DB.AutoMigrate(&models.User{}, &models.Novel{})
 }
 
 func main() {
 	router := gin.Default()
 
-	// blog routes
-	router.POST("/blog", controllers.CreateBlog)
-	router.GET("/blogs", controllers.BlogGetAll)
-	router.GET("/blogs/:id", controllers.BlogGetByID)
-	router.PUT("/blogs/:id", controllers.BlogUpdate)
-	router.DELETE("/blogs/:id", controllers.BlogSoftDelete)
-	router.DELETE("/blogs/:id/hard", controllers.BlogHardDelete)
-
-	// auth routes
+	//Use Raw JSON POST with param: "name", "email", "password"
 	router.POST("/register", controllers.Register)
+	//Use Raw JSON POST with param: "email", "password"
 	router.POST("/login", controllers.Login)
 
-	// protected example route
-	protected := router.Group("/protected")
+	//Example: localhost:8001/novels
+	router.GET("/novels", controllers.GetAllNovels)
+	//Example: localhost:8001/novels/1
+	router.GET("/novels/:id", controllers.GetNovelByID)
+
+	//In postman: Login then enter auth code in "Authorization" with type "Bearer Token"
+	// Admin only routes
+	admin := router.Group("/")
+	admin.Use(middleware.AdminOnly)
+	{
+		admin.POST("/novels", controllers.CreateNovel)
+		admin.PUT("/novels/:id", controllers.UpdateNovel)
+		admin.DELETE("/novels/:id", controllers.RemoveNovel)
+	}
+	protected := router.Group("/")
 	protected.Use(middleware.AuthMiddleware)
 	{
-		protected.GET("/profile", controllers.Profile)
+
+		//localhost:8001/profile/
+		protected.GET("/profile", controllers.Profile) // <-- profile includes: id, name, and email
+		//localhost:8001/bookmarks
+		protected.GET("/bookmarks", controllers.GetBookmarkedNovels)         // <-- get all bookmark
+		protected.POST("/bookmarks/:novel_id", controllers.BookmarkNovel)    // <-- add a novel to bookmark
+		protected.DELETE("/bookmarks/:novel_id", controllers.RemoveBookmark) // <-- remove novel from bookmark
 	}
-
-	router.GET("/profile2", middleware.AuthMiddleware2, controllers.Profile)
-
-	router.POST("/create-class", controllers.CreateClass)
-	router.GET("/class/:id/participants", controllers.GetClassParticipants)
-	router.GET("/user/:id/classes", controllers.GetClassesUserEnrolled)
 
 	router.Run()
 }

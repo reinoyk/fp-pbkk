@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Capitalized (Exported) so routes can see it
 func CreateNovel(c *gin.Context) {
 	var body struct {
 		Title         string  `json:"title" binding:"required"`
@@ -72,6 +73,7 @@ func GetNovelByID(c *gin.Context) {
 	var novel models.Novel
 
 	if err := initializers.DB.First(&novel, id).Error; err != nil {
+		// Use 404 for Not Found
 		c.JSON(http.StatusNotFound, gin.H{"error": "Novel not found"})
 		return
 	}
@@ -108,6 +110,7 @@ func UpdateNovel(c *gin.Context) {
 	if body.Author != "" {
 		updates["author"] = body.Author
 	}
+	// Check if pointer is not nil (meaning user explicitly sent a value)
 	if body.Rating != nil {
 		updates["rating"] = *body.Rating
 	}
@@ -124,4 +127,18 @@ func UpdateNovel(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"novel": novel})
+}
+
+func RemoveNovel(c *gin.Context) {
+	id := c.Param("id")
+	var novel models.Novel
+	if result := initializers.DB.First(&novel, id); result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Novel not found"})
+		return
+	}
+	if result := initializers.DB.Delete(&novel); result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Novel deleted successfully"})
 }

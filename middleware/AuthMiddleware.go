@@ -135,3 +135,24 @@ func AuthMiddleware2(c *gin.Context) {
 	c.Set("user", user)
 	c.Next()
 }
+
+func AdminOnly(c *gin.Context) {
+	u, exists := c.Get("user")
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	user, ok := u.(models.User)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "User context error"})
+		return
+	}
+
+	if user.Role != "admin" {
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Access forbidden: Admins only"})
+		return
+	}
+
+	c.Next()
+}
