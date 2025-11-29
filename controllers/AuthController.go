@@ -91,7 +91,21 @@ func Login(c *gin.Context) {
 	secure := os.Getenv("ENV") == "production"
 	c.SetCookie("token", tokenString, maxAge, "/", "", secure, true)
 
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	// Create a response struct without password
+	userResponse := struct {
+		ID    uint   `json:"id"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
+	}{
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"token": tokenString,
+		"user":  userResponse,
+	})
 }
 
 func Profile(c *gin.Context) {

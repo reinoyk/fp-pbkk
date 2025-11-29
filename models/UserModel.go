@@ -9,4 +9,5 @@ type User struct {
 
 	// add this line to establish relationship with Novel model
 	BookmarkedNovels []*Novel `gorm:"many2many:user_bookmarks;" json:"bookmarked_novels"`
+	Reviews         []Review `json:"reviews, omitempty"`
 }
