@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog API Demo</title>
+    <title>Admin</title>
     <style>
         * {
             margin: 0;
@@ -60,6 +60,7 @@
         input[type="text"],
         input[type="email"],
         input[type="password"],
+        input[type="number"],
         textarea {
             width: 100%;
             padding: 10px;
@@ -172,31 +173,7 @@
 </head>
 
 <body>
-    <h1>Blog API Demo</h1>
-
-    <div class="auth-status" id="authStatus">Not logged in</div>
-
-    <div class="container">
-        <!-- Register Form -->
-        <div class="section">
-            <h2>Register</h2>
-            <div class="message" id="registerMessage"></div>
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="registerName">Name:</label>
-                    <input type="text" id="registerName" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerEmail">Email:</label>
-                    <input type="email" id="registerEmail" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerPassword">Password:</label>
-                    <input type="password" id="registerPassword" required>
-                </div>
-                <button type="submit">Register</button>
-            </form>
-        </div>
+    <h1>Admin Novel Manager</h1>
 
         <!-- Login Form -->
         <div class="section">
@@ -216,39 +193,88 @@
             <button onclick="logout()" class="btn-danger" style="margin-top: 10px;">Logout</button>
         </div>
 
-        <!-- Create Blog Form -->
+        <br> </br>
+
+        <!-- Add Novel -->
         <div class="section">
-            <h2>Create Blog Post</h2>
-            <div class="message" id="createMessage"></div>
-            <form id="createBlogForm">
+            <h2>Add Novel</h2>
+            <div class="message" id="novelMessage"></div>
+            <form id="novelForm">
                 <div class="form-group">
-                    <label for="blogTitle">Title:</label>
-                    <input type="text" id="blogTitle" required>
+                    <label for="novelTitle">Title:</label>
+                    <input type="text" id="novelTitle" required>
                 </div>
                 <div class="form-group">
-                    <label for="blogContent">Content:</label>
-                    <textarea id="blogContent" required></textarea>
+                    <label for="novelAuthor">Author:</label>
+                    <input type="text" id="novelAuthor" required>
                 </div>
-                <button type="submit">Create Blog Post</button>
+                <div class="form-group">
+                    <label for="novelRating">Rating:</label>
+                    <input type="number" id="novelRating" step="0.1" min="0" max="5" required>                </div>
+                <div class="form-group">
+                    <label for="novelLanguage">Language:</label>
+                    <input type="text" id="novelLanguage" required>
+                </div>
+                <div class="form-group">
+                    <label for="novelYear">Published Year:</label>
+                    <input type="number" id="novelYear" required>
+                </div>
+                <button type="submit" class="btn-secondary">Create Novel</button>
             </form>
         </div>
 
-        <!-- Get Blogs -->
-        <div class="section">
-            <h2>Actions</h2>
-            <button onclick="getAllBlogs()" class="btn-secondary">Get All Blogs</button>
-            <div style="margin-top: 10px;">
-                <input type="text" id="blogId" placeholder="Enter Blog ID" style="margin-bottom: 10px;">
-                <button onclick="getBlogById()" class="btn-secondary">Get Blog by ID</button>
-            </div>
-        </div>
-    </div>
+        <br> </br>
+              
+                <div class="section">
+            <h2>Edit Novel</h2>
+            <div class="message" id="editMessage"></div>
 
-    <!-- Blogs List -->
-    <div id="blogsList">
-        <h2>Blogs</h2>
-        <div id="blogsContainer"></div>
-    </div>
+            <form id="editForm">
+                <div class="form-group">
+                    <label for="editID">ID:</label>
+                    <input type="number" id="editID" required>
+                </div>
+                <div class="form-group">
+                    <label for="editTitle">Title:</label>
+                    <input type="text" id="editTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="editAuthor">Author:</label>
+                    <input type="text" id="editAuthor" required>
+                </div>
+                <div class="form-group">
+                    <label for="editRating">Rating:</label>
+                    <input type="number" id="editRating" step="0.1" min="0" max="10" required>
+                </div>
+                <div class="form-group">
+                    <label for="editLanguage">Language:</label>
+                    <input type="text" id="editLanguage" required>
+                </div>
+                <div class="form-group">
+                    <label for="editYear">Published Year:</label>
+                    <input type="number" id="editYear" required>
+                </div>
+                <button type="submit" class="btn-secondary">Update Novel</button>
+            </form>
+        </div>
+
+        <br> </br>
+        
+        <div class="section">
+            <h2>Remove Novel</h2>
+            <div class="message" id="removeMessage"></div>
+            
+            <form id="removeForm">
+                <div class="form-group">
+                    <label for="removeID">ID:</label>
+                    <input type="number" id="removeID" required>
+                </div>
+                <button type="submit" class="btn-danger">Remove</button>
+            </form>
+        </div>
+
+        <br> </br>
+
 
     <script>
         const API_BASE_URL = 'http://localhost:8001';
@@ -280,34 +306,6 @@
             }, 5000);
         }
 
-        // Register
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const data = {
-                name: document.getElementById('registerName').value,
-                email: document.getElementById('registerEmail').value,
-                password: document.getElementById('registerPassword').value
-            };
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-                if (response.ok) {
-                    showMessage('registerMessage', 'Registration successful!', 'success');
-                    document.getElementById('registerForm').reset();
-                } else {
-                    showMessage('registerMessage', result.error || 'Registration failed', 'error');
-                }
-            } catch (error) {
-                showMessage('registerMessage', 'Error: ' + error.message, 'error');
-            }
-        });
-
         // Login
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -337,6 +335,102 @@
             }
         });
 
+        // Create Novel
+        document.getElementById('novelForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                title: document.getElementById('novelTitle').value,
+                author: document.getElementById('novelAuthor').value,
+                rating: parseFloat(document.getElementById('novelRating').value),
+                language: document.getElementById('novelLanguage').value,
+                year_published: parseInt(document.getElementById('novelYear').value)
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/novels`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    showMessage('novelMessage', 'Novel created successfully!', 'success');
+                    document.getElementById('novelForm').reset();
+                } else {
+                    showMessage('novelMessage', result.error || 'Failed to create novel', 'error');
+                }
+            } catch (error) {
+                showMessage('novelMessage', 'Error: ' + error.message, 'error');
+            }
+        });
+
+        // Delete Novel
+        document.getElementById('removeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const novelID = document.getElementById('removeID').value;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/novels/${novelID}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // CHANGED target from 'loginMessage' to 'removeMessage'
+                    showMessage('removeMessage', 'Novel removed successfully!', 'success');
+                    document.getElementById('removeForm').reset();
+                } else {
+                    // CHANGED target from 'loginMessage' to 'removeMessage'
+                    showMessage('removeMessage', result.error || 'Failed to remove novel', 'error');
+                }
+            } catch (error) {
+                // CHANGED target from 'loginMessage' to 'removeMessage'
+                showMessage('removeMessage', 'Error: ' + error.message, 'error');
+            }
+        });
+
+        // Edit Novel
+        document.getElementById('editForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const novelID = document.getElementById('editID').value;
+            
+            const data = {
+                title: document.getElementById('editTitle').value,
+                author: document.getElementById('editAuthor').value,
+                rating: parseFloat(document.getElementById('editRating').value),
+                language: document.getElementById('editLanguage').value,
+                year_published: parseInt(document.getElementById('editYear').value)
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/novels/${novelID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    showMessage('editMessage', 'Novel updated successfully!', 'success');
+                    document.getElementById('editForm').reset();
+                } else {
+                    showMessage('editMessage', result.error || 'Failed to update novel', 'error');
+                }
+            } catch (error) {
+                showMessage('editMessage', 'Error: ' + error.message, 'error');
+            }
+        });
+
         // Logout
         function logout() {
             document.cookie = 'token=; Max-Age=0; path=/;';
@@ -344,101 +438,6 @@
             updateAuthStatus();
         }
 
-        // Create Blog
-        document.getElementById('createBlogForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const data = {
-                title: document.getElementById('blogTitle').value,
-                content: document.getElementById('blogContent').value
-            };
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/blog`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-                if (response.ok) {
-                    showMessage('createMessage', 'Blog created successfully!', 'success');
-                    document.getElementById('createBlogForm').reset();
-                    getAllBlogs();
-                } else {
-                    showMessage('createMessage', result.error || 'Failed to create blog', 'error');
-                }
-            } catch (error) {
-                showMessage('createMessage', 'Error: ' + error.message, 'error');
-            }
-        });
-
-        // Get All Blogs
-        async function getAllBlogs() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/blogs`, {
-                    credentials: 'include'
-                });
-                const result = await response.json();
-
-                if (response.ok) {
-                    displayBlogs(result.blogs);
-                } else {
-                    document.getElementById('blogsContainer').innerHTML = `<p style="color: red;">Error: ${result.error}</p>`;
-                }
-            } catch (error) {
-                document.getElementById('blogsContainer').innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
-            }
-        }
-
-        // Get Blog by ID
-        async function getBlogById() {
-            const id = document.getElementById('blogId').value;
-            if (!id) {
-                alert('Please enter a blog ID');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/blogs/${id}`, {
-                    credentials: 'include'
-                });
-                const result = await response.json();
-
-                if (response.ok) {
-                    displayBlogs([result.blog]);
-                } else {
-                    document.getElementById('blogsContainer').innerHTML = `<p style="color: red;">Error: ${result.error}</p>`;
-                }
-            } catch (error) {
-                document.getElementById('blogsContainer').innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
-            }
-        }
-
-        // Display Blogs
-        function displayBlogs(blogs) {
-            const container = document.getElementById('blogsContainer');
-
-            if (!blogs || blogs.length === 0) {
-                container.innerHTML = '<p>No blogs found.</p>';
-                return;
-            }
-
-            container.innerHTML = blogs.map(blog => `
-                <div class="blog-item">
-                    <h3>${blog.Title}</h3>
-                    <p>${blog.Content}</p>
-                    <div class="blog-meta">
-                        ID: ${blog.ID} | 
-                        Author: ${blog.User ? blog.User.Name + ' (' + blog.User.Email + ')' : 'Unknown'} |
-                        Created: ${new Date(blog.CreatedAt).toLocaleString()}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Load blogs on page load
-        getAllBlogs();
     </script>
 </body>
 
