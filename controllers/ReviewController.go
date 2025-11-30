@@ -18,8 +18,8 @@ func CreateReview(c *gin.Context) {
 	if err := c.BindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	} 
-	
+	}
+
 	// Get Novel ID from URL parameter
 	novelID := c.Param("novelID")
 	var novel models.Novel
@@ -52,7 +52,7 @@ func CreateReview(c *gin.Context) {
 
 // To Get All Reviews for a Novel
 func GetReviewsByNovel(c *gin.Context) {
-	novelID := c.Param("novelID")
+	novelID := c.Param("id")
 	var reviews []models.Review
 
 	if result := initializers.DB.Where("novel_id = ?", novelID).Preload("User").Find(&reviews); result.Error != nil {
@@ -131,7 +131,6 @@ func DeleteReview(c *gin.Context) {
 		return
 	}
 
-	
 	// Check user authorization
 	userCtx, exists := c.Get("user")
 	if !exists {
@@ -149,7 +148,7 @@ func DeleteReview(c *gin.Context) {
 	if result := initializers.DB.Delete(&review); result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
 		return
-	}	
+	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Review deleted successfully"})
 }

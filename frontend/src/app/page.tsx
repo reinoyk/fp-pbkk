@@ -118,6 +118,9 @@ export default function Home() {
                   <span className="text-sm font-semibold text-slate-700">
                     Halo, {user.name} 👋
                   </span>
+                  <Link href="/bookmarks" className="text-sm text-slate-500 hover:text-blue-600 font-medium">
+                    My Bookmarks
+                  </Link>
                   <button
                     onClick={logout}
                     className="text-sm text-red-500 hover:text-red-700 font-medium"

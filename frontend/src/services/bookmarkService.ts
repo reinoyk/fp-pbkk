@@ -8,6 +8,7 @@ export const bookmarkService = {
             headers: {
                 'Authorization': `Bearer ${token}`,
             },
+            credentials: 'include', // Important for sending cookies
         });
 
         if (!res.ok) {
@@ -15,7 +16,8 @@ export const bookmarkService = {
         }
 
         const data = await res.json();
-        return data.novels || [];
+        // Backend returns { "bookmarked_novels": [...] }
+        return data.bookmarked_novels || [];
     },
 
     async addBookmark(token: string, novelId: number): Promise<void> {
@@ -24,6 +26,7 @@ export const bookmarkService = {
             headers: {
                 'Authorization': `Bearer ${token}`,
             },
+            credentials: 'include',
         });
 
         if (!res.ok) {
@@ -37,6 +40,7 @@ export const bookmarkService = {
             headers: {
                 'Authorization': `Bearer ${token}`,
             },
+            credentials: 'include',
         });
 
         if (!res.ok) {

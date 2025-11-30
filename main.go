@@ -5,8 +5,8 @@ import (
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/initializers"
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/middleware"
 	"github.com/Algoritma-dan-Pemrograman-ITS/Framework-Programming-GIN-GORM/models"
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 func init() {
@@ -19,12 +19,12 @@ func main() {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-        AllowOrigins:     []string{"http://localhost:3000"}, 
-        AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-        AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
-        ExposeHeaders:    []string{"Content-Length"},
-        AllowCredentials: true,
-    }))
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}))
 
 	//Use Raw JSON POST with param: "name", "email", "password"
 	router.POST("/register", controllers.Register)
@@ -64,8 +64,6 @@ func main() {
 		protected.PUT("/reviews/:reviewID", controllers.UpdateReview)
 		protected.DELETE("/reviews/:reviewID", controllers.DeleteReview)
 	}
-
-
 
 	router.Run()
 }
