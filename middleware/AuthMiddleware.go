@@ -15,28 +15,20 @@ func AuthMiddleware(c *gin.Context) {
 	// Prefer token in cookie named "token". If missing, fall back to Authorization header.
 	tokenString, err := c.Cookie("token")
 	if err != nil || tokenString == "" {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization cookie required"})
-		return
+		// Try to get from Authorization header
+		authHeader := c.GetHeader("Authorization")
+		if authHeader == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization cookie or header required"})
+			return
+		}
+
+		if len(authHeader) > 7 && authHeader[:7] == "Bearer " {
+			tokenString = authHeader[7:]
+		} else {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid Authorization header format"})
+			return
+		}
 	}
-
-	//using bearer token from header u can use this also by uncommenting below code
-	// authHeader := c.GetHeader("Authorization")
-	// if authHeader == "" {
-	// 	c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header required"})
-	// 	return
-	// }
-
-	// if !strings.Contains(authHeader, "Bearer ") {
-	// 	c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid Authorization header format"})
-	// 	return
-	// }
-
-	// //split the bearer and token
-	// tokenString := strings.Split(authHeader, "Bearer ")[1]
-	// if tokenString == "" {
-	// 	c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization token required"})
-	// 	return
-	// }
 
 	secret := os.Getenv("JWT_SECRET")
 

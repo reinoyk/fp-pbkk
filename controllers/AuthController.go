@@ -43,10 +43,12 @@ func Register(c *gin.Context) {
 		ID    uint   `json:"id"`
 		Name  string `json:"name"`
 		Email string `json:"email"`
+		Role  string `json:"role"`
 	}{
 		ID:    user.ID,
 		Name:  user.Name,
 		Email: user.Email,
+		Role:  user.Role,
 	}
 
 	c.JSON(http.StatusOK, gin.H{"user": userResponse})
@@ -96,10 +98,12 @@ func Login(c *gin.Context) {
 		ID    uint   `json:"id"`
 		Name  string `json:"name"`
 		Email string `json:"email"`
+		Role  string `json:"role"`
 	}{
 		ID:    user.ID,
 		Name:  user.Name,
 		Email: user.Email,
+		Role:  user.Role,
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -126,10 +130,12 @@ func Profile(c *gin.Context) {
 		ID    uint   `json:"id"`
 		Name  string `json:"name"`
 		Email string `json:"email"`
+		Role  string `json:"role"`
 	}{
 		ID:    user.ID,
 		Name:  user.Name,
 		Email: user.Email,
+		Role:  user.Role,
 	}
 
 	c.JSON(http.StatusOK, gin.H{"user": userResponse})

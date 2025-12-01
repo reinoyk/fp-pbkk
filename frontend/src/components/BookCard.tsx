@@ -22,7 +22,7 @@ const BookCard: React.FC<BookCardProps> = ({ novel, index, isBookmarked = false,
 
   const handleBookmarkClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!user || !token || loading) return;
+    if (!user || loading) return;
 
     setLoading(true);
     try {

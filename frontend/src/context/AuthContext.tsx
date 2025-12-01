@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { novelService } from "@/services/novelService";
 
 // Tipe data User 
 interface User {
@@ -30,14 +31,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // 1. Cek User saat aplikasi pertama kali dimuat (Refresh page aman)
   useEffect(() => {
-    const savedToken = Cookies.get("token");
-    const savedUser = Cookies.get("user");
+    const checkAuth = async () => {
+      try {
+        const data = await novelService.getProfile();
+        if (data && data.user) {
+          setUser(data.user);
+          setToken("cookie-auth"); 
+        }
+      } catch (error) {
+        console.log("Not authenticated via cookie");
+        setUser(null);
+        setToken(null);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (savedToken && savedUser) {
-      setToken(savedToken);
-      setUser(JSON.parse(savedUser));
-    }
-    setLoading(false);
+    checkAuth();
   }, []);
 
   // 2. Fungsi Login
@@ -46,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(newToken);
     setUser(newUser);
 
-    // Simpan ke Cookies (Biar direfresh ga ilang)
+    // Simpan ke Cookies (Biar direfresh ga ilang) - Optional now since we use httpOnly
     Cookies.set("token", newToken, { expires: 7 }); // Expire 7 hari
     Cookies.set("user", JSON.stringify(newUser), { expires: 7 });
 

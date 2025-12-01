@@ -3,11 +3,14 @@ import { Novel } from '@/types';
 const API_URL = 'http://localhost:8001';
 
 export const bookmarkService = {
-    async getBookmarks(token: string): Promise<Novel[]> {
+    async getBookmarks(token: string | null): Promise<Novel[]> {
+        const headers: any = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const res = await fetch(`${API_URL}/bookmarks`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
+            headers,
             credentials: 'include', // Important for sending cookies
         });
 
@@ -20,12 +23,15 @@ export const bookmarkService = {
         return data.bookmarked_novels || [];
     },
 
-    async addBookmark(token: string, novelId: number): Promise<void> {
+    async addBookmark(token: string | null, novelId: number): Promise<void> {
+        const headers: any = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const res = await fetch(`${API_URL}/bookmarks/${novelId}`, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
+            headers,
             credentials: 'include',
         });
 
@@ -34,12 +40,15 @@ export const bookmarkService = {
         }
     },
 
-    async removeBookmark(token: string, novelId: number): Promise<void> {
+    async removeBookmark(token: string | null, novelId: number): Promise<void> {
+        const headers: any = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const res = await fetch(`${API_URL}/bookmarks/${novelId}`, {
             method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
+            headers,
             credentials: 'include',
         });
 

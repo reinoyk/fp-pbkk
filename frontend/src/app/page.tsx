@@ -118,6 +118,11 @@ export default function Home() {
                   <span className="text-sm font-semibold text-slate-700">
                     Halo, {user.name} 👋
                   </span>
+                  {user.role === 'admin' && (
+                    <Link href="/admin" className="text-sm text-blue-600 hover:text-blue-800 font-bold">
+                      Admin Dashboard
+                    </Link>
+                  )}
                   <Link href="/bookmarks" className="text-sm text-slate-500 hover:text-blue-600 font-medium">
                     My Bookmarks
                   </Link>

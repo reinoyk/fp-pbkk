@@ -20,7 +20,7 @@ export default function BookmarksPage() {
 
     useEffect(() => {
         async function fetchBookmarks() {
-            if (user && token) {
+            if (user) {
                 try {
                     setLoading(true);
                     const data = await bookmarkService.getBookmarks(token);
@@ -38,7 +38,7 @@ export default function BookmarksPage() {
     }, [user, token]);
 
     const handleRemoveBookmark = async (novelId: number) => {
-        if (!token) return;
+        if (!user) return;
         try {
             await bookmarkService.removeBookmark(token, novelId);
             setBookmarks(bookmarks.filter(b => b.id !== novelId));
