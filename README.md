@@ -47,7 +47,7 @@ The system is architected with modularity in mind, separating configuration logi
 ---
 
 ## Demo
-Demo and explanation is available here:
+Demo and explanation is available here, click on the image:
 
 [<img width="1279" height="749" alt="{64B9B18B-454D-4A58-93C6-9339E15CD054}" src="https://github.com/user-attachments/assets/4c62ae0e-ca21-47be-8b9f-a1e0162c83a0" />](https://youtu.be/QarfX5EAGjA)
 
