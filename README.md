@@ -22,6 +22,7 @@
 ## Table of Contents
 
 * [Overview](#overview)
+* [Demo](#demo)
 * [Key Features](#key-features)
 * [Tech Stack](#tech-stack)
 * [System Architecture](#system-architecture)
@@ -42,6 +43,14 @@
 **Digital-Library-API** is a robust backend service designed to manage a digital library catalog. Built using **Golang** for high concurrency and performance, this project utilizes the **Gin Web Framework** for fast routing and **Gorm** as the ORM for seamless MySQL database interaction.
 
 The system is architected with modularity in mind, separating configuration logic from core business processing. Currently pre-populated with a structured dataset of popular books, the ongoing development focuses on implementing secure **JWT-based Authentication** and comprehensive **CRUD (Create, Read, Update, Delete)** operations to serve as a reliable backbone for library management applications.
+
+---
+
+## Demo
+Demo and explanation is available here:
+
+[<img width="1279" height="749" alt="{64B9B18B-454D-4A58-93C6-9339E15CD054}" src="https://github.com/user-attachments/assets/4c62ae0e-ca21-47be-8b9f-a1e0162c83a0" />](https://youtu.be/QarfX5EAGjA)
+
 
 ---
 
@@ -133,21 +142,10 @@ Ensure you have the following installed on your local machine:
 2.  **Access the API:**
     The server will start on `http://localhost:8080`.
 
+3. **Acessing Frontend:**
+   ```
+   cd frontend
+   npm run dev
+   ```
+   The server will start on `http://localhost:3000`
 ---
-
-## Project Structure
-
-The project follows a modular structure to ensure scalability:
-
-```text
-fp-pbkk/
-├── config/             # Database configuration and environment setup
-│   └── database.go
-├── controllers/        # Logic for handling requests (BookController, AuthController)
-├── models/             # Structs and Gorm models (Book, User)
-├── routes/             # API Route definitions
-├── main.go             # Entry point of the application
-├── go.mod              # Go module definition
-├── .env                # Environment variables
-└── README.md           # Documentation
-```
